@@ -1,169 +1,276 @@
 <% layout("/layouts/boilerplate") %>
-    <br>
-    <!-- <h3>All Listings</h3> -->
-    <style>
-        #filters{
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .filter{
-            text-align: center;
-            margin-right: 2rem;
-            opacity: 0.7;
-        }
-        .filter:hover{
-            opacity: 1;
-            cursor: pointer;
-        }
+<br/>
+<style>
+    #filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .filter {
+        text-align: center;
+        margin-right: 3rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .filter.active {
+        opacity: 1;
+        border-bottom: 2px solid #ff385c;
+    }
+    .filter p {
+        font-size: 0.8rem;
+    }
+    .tax-info {
+        display: none;
+    }
+    .tax-toggle {
+        border: 1px solid black;
+        border-radius: 1rem;
+        height: 3.25rem;
+        padding: 1rem;
+        margin-left: 2rem;
+        display: flex;
+        align-items: center;
+    }
+</style>
 
-        .filter p{
-            font-size: 0.8 rem;
-        }
+<% if (message) { %>
+    <div class="alert alert-warning alert-dismissible fade show col-6 offset-3" role="alert">
+        <%= message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<% } %>
 
-        .tax-info{
-            display :none;
-        }
-
-        .tax-toggle{
-            border: 1px solid black;
-            border-radius: 1rem;
-            height: 3.25rem;
-            padding: 1rem;
-            margin-left: 2rem;
-            display: flex;
-            align-items: center;
-        }
-    </style>
-     <% if (message) { %>
-        <div class="alert alert-warning alert-dismissible fade show col-6 offset-3" role="alert">
-            <%= message %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <% } %>
-        <div id="filters">
-        <div class="filter" data-filter="trending">
+<div id="filters">
+    <div class="filter" data-filter="trending">
         <div><i class="fa-solid fa-fire"></i></div>
         <p>Trending</p>
-        </div>
-        <div class="filter" data-filter="room">
+    </div>
+    <div class="filter" data-filter="room">
         <div><i class="fa-solid fa-bed"></i></div>
         <p>Room</p>
-        </div>
-        <div class="filter" data-filter="cities">
-        <div><i class="fa-solid fa-city"></i></i></div>
+    </div>
+    <div class="filter" data-filter="cities">
+        <div><i class="fa-solid fa-city"></i></div>
         <p>Cities</p>
-        </div>
-        <div class="filter" data-filter="mountain">
+    </div>
+    <div class="filter" data-filter="mountain">
         <div><i class="fa-solid fa-mountain-city"></i></div>
         <p>Mountain Cities</p>
-        </div>
-        <div class="filter" data-filter="castles">
+    </div>
+    <div class="filter" data-filter="castles">
         <div><i class="fa-brands fa-fort-awesome"></i></div>
         <p>Castles</p>
-        </div>
-        <div class="filter" data-filter="pools">
+    </div>
+    <div class="filter" data-filter="pools">
         <div><i class="fa-solid fa-person-swimming"></i></div>
         <p>Pools</p>
-        </div>
-        <div class="filter" data-filter="camping">
+    </div>
+    <div class="filter" data-filter="camping">
         <div><i class="fa-solid fa-campground"></i></div>
         <p>Camping</p>
-        </div>
-        <div class="filter" data-filter="beaches">
+    </div>
+    <div class="filter" data-filter="beaches">
         <div><i class="fa-solid fa-umbrella-beach"></i></div>
         <p>Beaches</p>
-        </div>
-        <div class="filter" data-filter="farms">
+    </div>
+    <div class="filter" data-filter="farms">
         <div><i class="fa-solid fa-tractor"></i></div>
         <p>Farms</p>
-        </div>
-        <div class="filter" data-filter="arctic">
+    </div>
+    <div class="filter" data-filter="arctic">
         <div><i class="fa-solid fa-snowman"></i></div>
         <p>Arctic</p>
-        </div>
-        <div class="filter" data-filter="bnb">
+    </div>
+    <div class="filter" data-filter="bnb">
         <div><i class="fa-solid fa-mug-hot"></i></div>
         <p>BnB</p>
-        </div>
-        <div class="tax-toggle ms-auto">
+    </div>
+    <div class="tax-toggle ms-auto">
         <div class="form-check-reverse form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
             <label class="form-check-label" for="flexSwitchCheckDefault">Display total after Taxes</label>
         </div>
-        </div>
     </div>
+</div>
 
-
-    <!-- <form method="GET" action="/listings/new">
-        <button>Create New Listing</button> -->
-        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-            <% for(let listing of allListings) { %>
-                <a href="/listings/<%= listing._id %>" class="listing-link">
-                    <div class="card col listing-card" style="width: 25rem">
-                        <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem">
-                        <div class="card-body">
-                            <p class="card-text">
-                                <b><%= listing.title %></b><br>
-                                &#8377; <%= listing.price %>
-                                <i class="tax-info"> &nbsp; +18% GST</i>
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            <% } %>
-        </div>
-<script>
-     let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-     taxSwitch.addEventListener("click", () => {
-        let taxInfo = document.getElementsByClassName("tax-info");
-        for(info of taxInfo){
-            if(info.style.display != "inline"){
-                info.style.display = "inline";
-            }else{
-                info.style.display = "none";
-            }
-        }
-     })
-</script>
-<script>
-    document.querySelectorAll('.filter').forEach(filter => {
-    filter.addEventListener('click', function() {
-        const keyword = this.getAttribute('data-filter'); // Use keyword for filtering
-
-        // Fetch filtered listings based on the keyword
-        fetch(`/listings?keyword=${encodeURIComponent(keyword)}`)
-            .then(response => response.json())
-            .then(data => {
-                renderListings(data);
-            })
-            .catch(error => {
-                console.error('Error fetching filtered listings:', error);
-            });
-    });
-});
-
-function renderListings(listings) {
-    const listingsContainer = document.querySelector('.row');
-    listingsContainer.innerHTML = ''; // Clear existing listings
-
-    listings.forEach(listing => {
-        const listingCard = `
-            <a href="/listings/${listing._id}" class="listing-link">
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3" id="listings-container">
+    <% for(let listing of allListings) { %>
+        <div class="listing-card-wrapper" data-keywords="<%= listing.keywords.join(' ') %>">
+            <a href="/listings/<%= listing._id %>" class="listing-link">
                 <div class="card col listing-card" style="width: 25rem">
-                    <img src="${listing.image.url}" class="card-img-top" alt="listing_image" style="height: 20rem">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem">
                     <div class="card-body">
                         <p class="card-text">
-                            <b>${listing.title}</b><br>
-                            &#8377; ${listing.price}
-                            <i class="tax-info" style="display: none;"> &nbsp; +18% GST</i>
+                            <b><%= listing.title %></b><br>
+                            <span class="listing-country" style="color: #6c757d; font-weight: bold;">
+                                <%= listing.country %>
+                            </span><br>
+                            <span class="listing-location" style="color: #6c757d; font-style: italic;">
+                                <%= listing.location %>
+                            </span><br>
+                            &#8377; <b><%= listing.price%></b> / night
+                            <i class="tax-info">&nbsp; +18% GST</i>
                         </p>
                     </div>
                 </div>
             </a>
-        `;
-        listingsContainer.insertAdjacentHTML('beforeend', listingCard);
+        </div>
+    <% } %>
+</div>
+
+<script>
+// Tax switch functionality
+let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for(info of taxInfo) {
+        info.style.display = info.style.display !== "inline" ? "inline" : "none";
+    }
+});
+
+// Filter functionality
+document.querySelectorAll('.filter').forEach(filter => {
+    filter.addEventListener('click', function() {
+        // Toggle active class
+        document.querySelectorAll('.filter').forEach(f => f.classList.remove('active'));
+        this.classList.add('active');
+
+        const keyword = this.getAttribute('data-filter');
+        fetchListings(keyword);
+    });
+});
+
+// Replace the fetchListings function in your index.ejs
+function fetchListings(keyword) {
+    const container = document.getElementById('listings-container');
+    container.style.opacity = '0.5';
+
+    // Remove any existing spinners
+    const existingSpinner = document.getElementById('loading-spinner');
+    if (existingSpinner) existingSpinner.remove();
+
+    // Add loading spinner
+    container.insertAdjacentHTML('beforebegin', `
+        <div id="loading-spinner" class="text-center my-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `);
+
+    // Log the keyword being searched for debugging
+    console.log('Fetching listings for keyword:', keyword);
+
+    fetch(`/listings?keyword=${encodeURIComponent(keyword)}`, {
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Received listings:', data); // For debugging
+        renderListings(data);
+    })
+    .catch(error => {
+        console.error('Error fetching listings:', error);
+        showError('Error loading listings. Please try again.');
+    })
+    .finally(() => {
+        container.style.opacity = '1';
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.remove();
     });
 }
-</script>
 
+// Add this debug function to check what keywords are present
+function debugListingKeywords() {
+    const listings = document.querySelectorAll('.listing-card-wrapper');
+    listings.forEach(listing => {
+        console.log('Listing keywords:', listing.dataset.keywords);
+    });
+}
+
+// Update the filter click event listener
+document.querySelectorAll('.filter').forEach(filter => {
+    filter.addEventListener('click', function() {
+        // Remove active class from all filters
+        document.querySelectorAll('.filter').forEach(f => f.classList.remove('active'));
+        // Add active class to clicked filter
+        this.classList.add('active');
+
+        const keyword = this.getAttribute('data-filter');
+        console.log('Selected filter:', keyword); // For debugging
+        fetchListings(keyword);
+    });
+});
+function showError(message) {
+    // Remove existing error messages
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+
+    // Show new error message
+    const alertHtml = `
+        <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    document.getElementById('listings-container').insertAdjacentHTML('beforebegin', alertHtml);
+}
+
+function renderListings(listings) {
+    const container = document.getElementById('listings-container');
+    container.innerHTML = '';
+
+    if (!listings || listings.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center mt-4">
+                <p>No listings found for the selected filter.</p>
+            </div>
+        `;
+        return;
+    }
+
+    listings.forEach(listing => {
+        const listingHtml = `
+            <div class="listing-card-wrapper" data-keywords="${listing.keywords?.join(' ') || ''}">
+                <a href="/listings/${listing._id}" class="listing-link">
+                    <div class="card col listing-card" style="width: 25rem">
+                        <img src="${listing.image.url}" class="card-img-top" alt="listing_image" style="height: 20rem">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <b>${listing.title}</b><br>
+                                <span class="listing-country" style="color: #6c757d; font-weight: bold;">
+                                    ${listing.country}
+                                </span><br>
+                                <span class="listing-location" style="color: #6c757d; font-style: italic;">
+                                    ${listing.location}
+                                </span><br>
+                                &#8377; <b>${listing.price}</b> / night
+                                <i class="tax-info"${taxSwitch.checked ? ' style="display: inline;"' : ''}>&nbsp; +18% GST</i>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', listingHtml);
+    });
+}
+
+// Add this at the bottom of your script section
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, checking listing keywords:');
+    debugListingKeywords();
+});
+
+</script>

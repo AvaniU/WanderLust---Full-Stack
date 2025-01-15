@@ -21,7 +21,13 @@ body{
 
 .nav-link{
     color: #222222 !important;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
+
+.nav-link:hover {
+    color: rgb(0, 0, 0); /* Change to your desired color */
+    text-shadow: 0px 0px 5px rgba(124, 122, 122, 0.5); /* Optional glowing effect */
+  }
 
 .nav-link-bnb{
     color:#222222 !important ;
@@ -79,8 +85,9 @@ body{
     padding: 0 !important;
 }
 
-.card-text p{
+.card-text{
     font-weight: 400 !important;
+    color: black !important;
 }
 
 .listing-link{
